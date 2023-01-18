@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>hj_canvas</title>
+    <style>
+      body,
+      html {
+        width: 100%;
+        height: 100%;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+      }
+
+      .box {
+        width: 100%;
+        display: flex;
+        flex-flow: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        font-size: 0;
+      }
+
+      .box .img-box {
+        border: 1px solid #eee;
+        border-radius: 5px;
+        margin: 20px 0;
+        padding-bottom: 10px;
+        color: lightblue;
+        width: 32%;
+        box-sizing: border-box;
+        box-shadow: 10px 10px 5px 0 #eee;
+        margin-left: 5px;
+      }
+
+      .box .img-box img {
+        width: 100px;
+        height: 100px;
+        margin: 10px 0;
+        border-radius: 7px;
+      }
+
+      .box .img-box p {
+        text-align: center;
+      }
+
+      a {
+        display: block;
+        text-decoration: none;
+        text-align: center;
+      }
+
+      p {
+        font-size: 14px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <canvas id="canvas"></canvas>
+    <div class="box">
+      <div class="img-box">
+        <a href="./时钟/index.html" target="_blank">
+          <img src="./img/p1.jpg" alt="" />
+          <p>时钟</p>
+        </a>
+      </div>
+      <div class="img-box">
+        <a href="./星空/index.html" target="_blank">
+          <img src="./img/p2.jpg" alt="" />
+          <p>星空</p>
+        </a>
+      </div>
+      <div class="img-box">
+        <a href="./绚丽的倒计时/index.html" target="_blank">
+          <img src="./img/p3.jpg" alt="" />
+          <p>倒计时</p>
+        </a>
+      </div>
+      <div class="img-box">
+        <a href="./红包/index.html" target="_blank">
+          <img src="./img/p4.jpg" alt="" />
+          <p>遮罩</p>
+        </a>
+      </div>
+      <div class="img-box">
+        <a href="./魔法阵/index.html" target="_blank">
+          <img src="./img/p5.jpg" alt="" />
+          <p>魔法阵</p>
+        </a>
+      </div>
+      <div class="img-box">
+        <a href="./写字/index.html" target="_blank">
+          <img src="./img/bg.gif" alt="" />
+          <p>写字</p>
+        </a>
+      </div>
+      <div class="img-box">
+        <a href="./vue3.0抖音/index.html" target="_blank">
+          <img src="./img/douyin.gif" alt="" />
+          <p>Vue3.0抖音</p>
+        </a>
+      </div>
+      <div class="img-box">
+        <a href="./瀑布流/index.html" target="_blank">
+          <img src="./img/zanwu.gif" alt="" />
+          <p>瀑布流</p>
+        </a>
+      </div>
+      <div class="img-box">
+        <a href="./fireworks/index.html" target="_blank">
+          <img src="./img/fireworks.gif" alt="" />
+          <p>烟花</p>
+        </a>
+      </div>
+    </div>
+
+    <script>
+      var searchLight = {
+        x: 20,
+        y: 20,
+        R: 50,
+        vx: Math.random() * 5 + 10,
+        vy: Math.random() * 5 + 10,
+      };
+      window.onload = function () {
+        var canvas = document.getElementById("canvas");
+        var context = canvas.getContext("2d");
+        canvas.width = document.body.clientWidth;
+        canvas.height = 150;
+        (function run() {
+          draw(context);
+          update(canvas.width, canvas.height);
+          window.requestAnimationFrame(run);
+        })();
+      };
+
+      function draw(ctx) {
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        ctx.save();
+        ctx.beginPath();
+        ctx.fillStyle = "black";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.beginPath();
+        ctx.arc(searchLight.x, searchLight.y, searchLight.R, 0, Math.PI * 2);
+        ctx.fillStyle = "white";
+        ctx.fill();
+        ctx.clip();
+        var textStyle = ctx.createLinearGradient(
+          canvas.width / 2,
+          0,
+          canvas.width,
+          canvas.height
+        );
+        textStyle.addColorStop(0.0, "green");
+        textStyle.addColorStop(0.1, "yellow");
+        textStyle.addColorStop(1.0, "white");
+        ctx.fillStyle = textStyle;
+        let size = (canvas.height * 3) / 5;
+        ctx.font = `bold italic ${size}px sans-serif`;
+        ctx.textBaseline = "middle";
+        ctx.textAlign = "center";
+        ctx.fillText("CANVAS", canvas.width / 2, canvas.height / 2);
+        ctx.closePath();
+        ctx.restore();
+      }
+
+      function update(canvasWidth, canvasHeight) {
+        searchLight.x += searchLight.vx;
+        searchLight.y += searchLight.vy;
+        if (searchLight.x - searchLight.R <= 0) {
+          searchLight.x = searchLight.R;
+          searchLight.vx = -searchLight.vx;
+        }
+        if (searchLight.x + searchLight.R >= canvasWidth) {
+          searchLight.x = canvasWidth - searchLight.R;
+          searchLight.vx = -searchLight.vx;
+        }
+        if (searchLight.y - searchLight.R <= 0) {
+          searchLight.y = searchLight.R;
+          searchLight.vy = -searchLight.vy;
+        }
+        if (searchLight.y + searchLight.R >= canvasHeight) {
+          searchLight.y = canvasHeight - searchLight.R;
+          searchLight.vy = -searchLight.vy;
+        }
+      }
+    </script>
+  </body>
+</html>

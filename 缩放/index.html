@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body,
+        html {
+            height: 100%;
+        }
+        
+        #canvas {
+            display: block;
+            margin: 0 auto;
+        }
+        
+        .range {
+            display: block;
+            margin: 20px auto;
+            width: 400px;
+        }
+        
+        #watermark {
+            display: block;
+            margin: 0 auto;
+            border: 1px solid #aaa;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas">您的浏览器尚不支持canvas</canvas>
+    <input id="range" class="range" type="range" min="0.5" max="3" value="0.5" step="0.01">
+    <canvas id="watermark"></canvas>
+    <canvas id="offCanvas" style="display: none;"></canvas>
+    <script>
+        var canvas = document.getElementById('canvas')
+        var context = canvas.getContext('2d')
+        var slider = document.getElementById('range')
+        var image = new Image()
+        var click = false
+        var watermarkCanvas = document.getElementById('watermark')
+        var watermarkContext = watermarkCanvas.getContext('2d')
+
+
+        window.onload = function() {
+            canvas.width = 1133
+            canvas.height = 850
+            var scale = slider.value
+            image.src = './picture.jpg'
+            image.onload = function() {
+                    drawImageByScale(scale)
+                    slider.onmousedown = function(e) {
+                        click = true
+                    }
+                    slider.onmousemove = function(e) {
+                        if (click) {
+                            scale = slider.value
+                            drawImageByScale(scale)
+                        }
+                    }
+                    slider.onmouseup = function(e) {
+                        click = false
+                    }
+                }
+                // watermark - canvas
+            watermarkCanvas.width = 362
+            watermarkCanvas.height = 100
+            watermarkContext.font = 'bold 50px Arial'
+            watermarkContext.fillStyle = 'rgba(200,200,200,0.5)'
+            watermarkContext.textBaseline = 'middle'
+            watermarkContext.fillText('== Scott he ==', 10, 50)
+        }
+
+        function drawImageByScale(scale) {
+            var imageWidth = 1133 * scale
+            var imageHeight = 850 * scale
+            var dx = canvas.width / 2 - imageWidth / 2
+            var dy = canvas.height / 2 - imageHeight / 2
+            context.clearRect(0, 0, canvas.width, canvas.height)
+            context.drawImage(image, dx, dy, imageWidth, imageHeight)
+            context.drawImage(watermarkCanvas, canvas.width - watermarkCanvas.width, canvas.height - watermarkCanvas.height)
+        }
+    </script>
+</body>
+
+</html>

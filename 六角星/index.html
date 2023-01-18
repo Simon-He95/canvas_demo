@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <style>
+            body,
+            html {
+                height: 100%;
+                width: 100%;
+                padding: 0;
+                margin: 0;
+            }
+            #canvas {
+                display: block;
+                margin: 0 auto;
+                border: 2px solid gray;
+            }
+        </style>
+    </head>
+
+    <body>
+        <canvas id="canvas"></canvas>
+
+        <script>
+            window.onload = function () {
+                var canvas = document.getElementById('canvas')
+                canvas.width = document.body.clientWidth
+                canvas.height = document.body.clientHeight
+                var context = canvas.getContext('2d')
+                draw(context, 100, 200, 200, 0)
+
+            }
+            function draw(ctx, R, x, y, rot) {
+                ctx.save()
+                ctx.strokeStyle = "black"
+                ctx.translate(x, y)
+                ctx.rotate(rot / 180 * Math.PI)
+                starPath(ctx, R)
+
+                ctx.restore()
+            }
+            function starPath(ctx, R) {
+                ctx.beginPath()
+                for (var i = 0; i < 6; i++) {
+                    ctx.lineTo(R * Math.sqrt(3) * Math.cos((30 + i * 60) / 180 * Math.PI), -R * Math.sqrt(3) * Math.sin((30 + i * 60) / 180 * Math.PI))
+                    ctx.lineTo(R * Math.cos((60 + i * 60) / 180 * Math.PI), -R * Math.sin((60 + i * 60) / 180 * Math.PI))
+                }
+                ctx.closePath()
+                ctx.stroke()
+                ctx.beginPath()
+                for (var i = 0; i < 6; i++) {
+                    ctx.lineTo(R * Math.cos((60 + i * 60) / 180 * Math.PI), -R * Math.sin((60 + i * 60) / 180 * Math.PI))
+                    ctx.lineTo(0, 0)
+                }
+                for (var i = 0; i < 6; i++) {
+                    ctx.lineTo(R * Math.cos((60 + i * 60) / 180 * Math.PI), -R * Math.sin((60 + i * 60) / 180 * Math.PI))
+                }
+                ctx.closePath()
+                ctx.stroke()
+            }
+        </script>
+    </body>
+
+</html>

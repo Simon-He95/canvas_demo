@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .box {
+            text-align: center;
+        }
+        
+        #canvas {
+            border: 5px solid lightblue;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <canvas id="canvas"></canvas>
+    </div>
+
+    <script>
+        window.onload = function() {
+            var canvas = document.getElementById('canvas')
+            canvas.width = 800
+            canvas.height = 800
+            var context = canvas.getContext('2d')
+            fillRoundRect(context, 150, 150, 500, 500, 10, '#bbada0')
+            for (var i = 0; i < 4; i++) {
+                for (var j = 0; j < 4; j++) {
+                    fillRoundRect(context, 170 + 120 * i, 170 + 120 * j, 100, 100, 6, '#ccc0b3')
+                }
+            }
+
+
+        }
+
+        function fillRoundRect(ctx, x, y, width, height, r, fillColor) {
+            if (2 * r > width || 2 * r > height) {
+                return
+            }
+            ctx.save()
+            ctx.translate(x, y)
+            pathRoundRect(ctx, width, height, r)
+            ctx.fillStyle = fillColor || 'black'
+            ctx.fill()
+            ctx.restore()
+        }
+
+        function strokeRoundRect(ctx, x, y, width, height, r, lineWidth, strokeColor) {
+            if (2 * r > width || 2 * r > height) {
+                return
+            }
+            ctx.save()
+            ctx.translate(x, y)
+            pathRoundRect(ctx, width, height, r)
+            ctx.lineWidth = lineWidth || 1
+            ctx.strokeStyle = fillColor || 'black'
+            ctx.stroke()
+            ctx.restore()
+        }
+
+        function pathRoundRect(ctx, width, height, r) {
+            ctx.beginPath()
+            ctx.arc(width - r, height - r, r, 0, Math.PI / 2)
+            ctx.lineTo(r, height)
+            ctx.arc(r, height - r, r, Math.PI / 2, Math.PI)
+            ctx.lineTo(0, r)
+            ctx.arc(r, r, r, Math.PI, Math.PI * 3 / 2)
+            ctx.lineTo(width - r, 0)
+            ctx.arc(width - r, r, r, Math.PI * 3 / 2, Math.PI * 2)
+            ctx.closePath()
+        }
+    </script>
+</body>
+
+</html>

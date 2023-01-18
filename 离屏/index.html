@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #canvas {
+            display: block;
+            margin: 0 auto;
+            border: 1px solid #eee;
+            border-radius: 12px;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas">您的浏览器尚不支持canvas</canvas>
+    <canvas id="offCanvas" style="display: none;">您的浏览器尚不支持canvas</canvas>
+    <script>
+        var canvas = document.getElementById('canvas')
+        var context = canvas.getContext('2d')
+        var offCanvas = document.getElementById('offCanvas')
+        var offContext = offCanvas.getContext('2d')
+        var isMouseDown = false
+        var scaleX
+        var scaleY
+        var image = new Image()
+        window.onload = function() {
+            canvas.width = Math.min(700, document.body.clientWidth)
+            canvas.height = canvas.width
+            image.src = 'lp-2.jpg'
+            image.onload = function() {
+                offCanvas.width = image.width
+                offCanvas.height = image.height
+                scaleX = offCanvas.width / canvas.width
+                scaleY = offCanvas.height / canvas.height
+                context.drawImage(image, 0, 0, canvas.width, canvas.height)
+                offContext.drawImage(image, 0, 0)
+            }
+        }
+
+        function windowToCanvas(x, y) {
+            var bbox = canvas.getBoundingClientRect()
+            return {
+                x: x - bbox.left,
+                y: y - bbox.top
+            }
+        }
+        canvas.ontouchstart = function(e) {
+            e.preventDefault()
+            var point = windowToCanvas(e.touches[0].pageX, e.touches[0].pageY)
+            isMouseDown = true
+            drawCanvasWithMagnifer(true, point)
+        }
+        canvas.ontouchmove = function(e) {
+            e.preventDefault()
+            if (isMouseDown) {
+                var point = windowToCanvas(e.touches[0].pageX, e.touches[0].pageY)
+                drawCanvasWithMagnifer(true, point)
+            }
+        }
+        canvas.ontouchend = function(e) {
+            e.preventDefault()
+            isMouseDown = false
+            drawCanvasWithMagnifer(false)
+        }
+
+        canvas.onmousedown = function(e) {
+            e.preventDefault()
+            var point = windowToCanvas(e.clientX, e.clientY)
+            isMouseDown = true
+            drawCanvasWithMagnifer(true, point)
+        }
+
+        canvas.onmousemove = function(e) {
+            e.preventDefault()
+            if (isMouseDown) {
+                var point = windowToCanvas(e.clientX, e.clientY)
+                drawCanvasWithMagnifer(true, point)
+            }
+
+        }
+
+        canvas.onmouseup = function(e) {
+            e.preventDefault()
+            isMouseDown = false
+            drawCanvasWithMagnifer(false)
+        }
+
+        canvas.onmouseout = function(e) {
+            e.preventDefault()
+            isMouseDown = false
+            drawCanvasWithMagnifer(false)
+        }
+
+        function drawCanvasWithMagnifer(isShow, point) {
+            context.clearRect(0, 0, canvas.width, canvas.height)
+            context.drawImage(image, 0, 0, canvas.width, canvas.height)
+            if (isShow) { // 绘制放大镜
+                drawMagnifer(point)
+            }
+        }
+
+        function drawMagnifer(point) {
+            // canvas点击放大的点对应原始图片的位置
+            var image_cx = point.x * scaleX
+            var image_cy = point.y * scaleY
+            var magniferR = canvas.width / 5 // 放大镜半径
+            var sx = image_cx - magniferR
+            var sy = image_cy - magniferR
+            var dx = point.x - magniferR
+            var dy = point.y - magniferR
+            context.save()
+            context.lineWidth = 10
+            context.strokeStyle = '#069'
+            context.beginPath()
+            context.arc(point.x, point.y, magniferR, 0, Math.PI * 2)
+            context.stroke()
+            context.clip()
+            context.drawImage(offCanvas, sx, sy, 5 * magniferR, 5 * magniferR, dx, dy, 2 * magniferR, 2 * magniferR)
+            context.restore()
+        }
+    </script>
+</body>
+
+</html>

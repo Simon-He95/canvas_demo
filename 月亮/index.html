@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #canvas {
+            border: 2px solid gray;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas"></canvas>
+
+    <script>
+        window.onload = function() {
+            var canvas = document.getElementById('canvas')
+            canvas.width = 800
+            canvas.height = 800
+            var context = canvas.getContext('2d')
+
+            // 使用arcTo绘制弯月
+            // fillMoon(context, 2, 400, 400, 100, 0)
+
+            //使用二次贝塞尔曲线绘制弯月
+            // fillMoon(context, 2, 400, 400, 100, 0)
+            // 文字居中的样式
+            // context.fillStyle = 'lightblue'
+            // context.textAlign = 'center'
+            // context.textBaseline = 'middle'
+            // context.font = 'bold 120px Arial'
+            // context.fillText('CANVAS', canvas.width / 2, canvas.height / 2)
+            // context.moveTo(canvas.width / 2, 0)
+            // context.lineTo(canvas.width / 2, canvas.height)
+            // context.moveTo(0, canvas.height / 2)
+            // context.lineTo(canvas.width, canvas.height / 2)
+            // context.stroke()
+
+            //测量字体长度
+            context.fillStyle = 'yellow'
+            context.font = 'bold 30px Arial'
+            context.fillText('学习canvas！', 40, 100)
+            var textWidth = context.measureText('学习canvas！').width
+                // 添加阴影
+                // context.shadowColor = 'gray'
+                // context.shadowOffsetX = 7
+                // context.shadowOffsetY = 7
+                // context.shadowBlur = 2
+            context.fillText('字符串的长度为：' + textWidth, 40, 200)
+
+
+
+
+        }
+
+        function fillMoon(ctx, d, x, y, R, rot, fillColor) {
+            ctx.save()
+            ctx.translate(x, y)
+            ctx.rotate(rot * Math.PI / 180)
+            ctx.scale(R, R)
+            pathMoon(ctx, d)
+            ctx.fillStyle = fillColor || '#fb5'
+            ctx.fill()
+            ctx.restore()
+        }
+
+        function pathMoon(ctx, d) {
+            ctx.beginPath()
+            ctx.arc(0, 0, 1, 0.5 * Math.PI, 1.5 * Math.PI, true)
+            ctx.moveTo(0, -1)
+                // ctx.arcTo(d, 0, 0, 1, dis(0, -1, d, 0) / d) // 使用arcTo绘制弯月
+            ctx.quadraticCurveTo(1.1, 0, 0, 1) // 使用二次贝塞尔曲线绘制弯月
+
+            ctx.closePath()
+        }
+
+        function dis(x1, y1, x2, y2) {
+            return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2))
+        }
+    </script>
+</body>
+
+</html>

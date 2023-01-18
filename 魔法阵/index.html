@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body,
+        html {
+            height: 100%;
+            width: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        
+        #canvas {
+            display: block;
+            margin: 0 auto;
+            border: 2px solid gray;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas"></canvas>
+
+    <script>
+        var ball = {
+            x: 100,
+            y: 100,
+            vx: Math.random() * 5 + 10,
+            vy: Math.random() * 5 + 10,
+            rot: 0
+        }
+        console.log(ball.vx)
+        window.onload = function() {
+            var canvas = document.getElementById('canvas')
+            canvas.width = document.body.clientWidth
+            canvas.height = document.body.clientHeight
+            var context = canvas.getContext('2d');
+            (function run() {
+                draw(context)
+                update(context, canvas.width, canvas.height)
+                window.requestAnimationFrame(run)
+            })()
+        }
+
+        function update(ctx, cavasWidth, canvasHeight) {
+            ball.x += ball.vx
+            ball.y += ball.vy
+            ball.rot += 5
+            if (ball.x - cavasWidth / 5 <= 0) {
+                ball.x = cavasWidth / 5
+                ball.vx = -ball.vx
+            }
+            if (ball.x + cavasWidth / 5 >= cavasWidth) {
+                ball.x = cavasWidth - cavasWidth / 5
+                ball.vx = -ball.vx
+            }
+            if (ball.y - cavasWidth / 5 <= 0) {
+                ball.y = cavasWidth / 5
+                ball.vy = -ball.vy
+            }
+            if (ball.y + cavasWidth / 5 >= canvasHeight) {
+                ball.y = canvasHeight - cavasWidth / 5
+                ball.vy = -ball.vy
+            }
+        }
+
+        function draw(ctx) {
+            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+            ctx.save()
+            ctx.beginPath()
+            ctx.fillStyle = 'black'
+            ctx.fillRect(0, 0, canvas.width, canvas.height)
+            ctx.beginPath()
+            ctx.fillStyle = 'rgba(255,255,255,1)'
+            ctx.shadowOffsetX = 5;
+            ctx.shadowOffsetY = 5;
+            ctx.shadowColor = 'black';
+            ctx.shadowBlur = 8;
+            ctx.arc(ball.x, ball.y, canvas.width / 5, 0, 2 * Math.PI, true)
+            ctx.fill()
+            ctx.clip()
+            ctx.beginPath()
+            ctx.strokeStyle = '#D8D4E6'
+            drawStar(ctx, canvas.width / 5 / Math.sqrt(3), ball.x, ball.y, ball.rot)
+            var textStyle = ctx.createLinearGradient(canvas.width / 2, 0, canvas.width, canvas.height)
+            textStyle.addColorStop(0.0, 'green')
+            textStyle.addColorStop(0.1, 'yellow')
+            textStyle.addColorStop(1.0, 'white')
+            ctx.fillStyle = textStyle
+            var Size = canvas.width / 8
+            ctx.font = `bold italic ${Size}px sans-serif`
+            ctx.textBaseline = 'middle'
+            ctx.textAlign = 'center'
+            ctx.fillText('CANVAS', canvas.width / 2, canvas.height / 2)
+            ctx.closePath()
+            ctx.restore()
+        }
+
+        function drawStar(ctx, R, x, y, rot) {
+            ctx.save()
+
+            ctx.translate(x, y)
+            ctx.rotate(rot / 180 * Math.PI)
+            starPath(ctx, R)
+            ctx.restore()
+        }
+
+        function starPath(ctx, R) {
+            ctx.beginPath()
+            for (var i = 0; i < 6; i++) {
+                ctx.lineTo(R * Math.sqrt(3) * Math.cos((30 + i * 60) / 180 * Math.PI), -R * Math.sqrt(3) * Math.sin((30 + i * 60) / 180 * Math.PI))
+                ctx.lineTo(R * Math.cos((60 + i * 60) / 180 * Math.PI), -R * Math.sin((60 + i * 60) / 180 * Math.PI))
+            }
+            ctx.closePath()
+            ctx.stroke()
+            ctx.beginPath()
+            for (var i = 0; i < 6; i++) {
+                ctx.lineTo(R * Math.cos((60 + i * 60) / 180 * Math.PI), -R * Math.sin((60 + i * 60) / 180 * Math.PI))
+                ctx.lineTo(0, 0)
+            }
+            for (var i = 0; i < 6; i++) {
+                ctx.lineTo(R * Math.cos((60 + i * 60) / 180 * Math.PI), -R * Math.sin((60 + i * 60) / 180 * Math.PI))
+            }
+            ctx.closePath()
+            ctx.stroke()
+        }
+    </script>
+</body>
+
+</html>
